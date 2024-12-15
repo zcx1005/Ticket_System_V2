@@ -118,6 +118,9 @@ public class Flight {
         }
     }
 
+    public void closeForReservation() {
+        this.isOpenForReservation = false;
+    }
 
     /**
      * Returns a string representation of the flight.
