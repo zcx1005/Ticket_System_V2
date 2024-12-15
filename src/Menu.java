@@ -3,15 +3,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class Menu {
 
     private AirlineCompany airlineCompany;
     private Scanner scanner;
+    private FlightPerformanceAnalyzer performanceAnalyzer;
 
     public Menu(AirlineCompany airlineCompany) {
         this.airlineCompany = airlineCompany;
         this.scanner = new Scanner(System.in);
+        this.performanceAnalyzer = new FlightPerformanceAnalyzer(airlineCompany.getAllFlights()); // 初始化性能分析器
     }
 
     public void display() {
@@ -55,6 +58,15 @@ public class Menu {
                     viewAllPassengersForFlight();
                     break;
                 case 11:
+                    viewOnTimeRate();
+                    break;
+                case 12:
+                    viewSeatOccupancyTrend();
+                    break;
+                case 13:
+                    viewCancellationRate();
+                    break;
+                case 14:
                     exit = true;
                     System.out.println("Exiting the program.");
                     break;
@@ -78,7 +90,10 @@ public class Menu {
         System.out.println("8. View nearly full flights");
         System.out.println("9. View passenger reservations");
         System.out.println("10. View all passengers for a flight");
-        System.out.println("11. Exit");
+        System.out.println("11. View average on-time rate");
+        System.out.println("12. View seat occupancy trend");
+        System.out.println("13. View flight cancellation rate");
+        System.out.println("14. Exit");
         System.out.print("Choose an option: ");
     }
 
@@ -213,5 +228,25 @@ public class Menu {
         } else {
             System.out.println("Flight not found.");
         }
+    }
+    // Display average on-time rate
+    private void viewOnTimeRate() {
+        double onTimeRate = performanceAnalyzer.calculateOnTimeRate();
+        System.out.println("Average on-time rate: " + onTimeRate + "%");
+    }
+
+    // Display seat occupancy trend
+    private void viewSeatOccupancyTrend() {
+        Map<String, Double> seatOccupancy = performanceAnalyzer.analyzeSeatOccupancyTrend();
+        System.out.println("Seat occupancy trend:");
+        seatOccupancy.forEach((flightNumber, occupancy) -> {
+            System.out.println("Flight " + flightNumber + ": " + occupancy + "%");
+        });
+    }
+
+    // Display cancellation rate
+    private void viewCancellationRate() {
+        double cancellationRate = performanceAnalyzer.calculateCancellationRate();
+        System.out.println("Flight cancellation rate: " + cancellationRate + "%");
     }
 }

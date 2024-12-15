@@ -87,9 +87,18 @@ public class Flight {
         return vip;
     }
 
+    public FlightStatus getStatus() { return status; }
+
+
     // Setters
     public void setOpenForReservation(boolean openForReservation) {
         this.isOpenForReservation = openForReservation;
+    }
+
+
+    // Setter for status
+    public void setStatus(FlightStatus status) {
+        this.status = status;
     }
 
     // Method to check if the reservations should be closed
@@ -99,20 +108,16 @@ public class Flight {
         }
     }
 
-    // Setter for status
-    public void setStatus(FlightStatus status) {
-        this.status = status;
+    public boolean isDelay () {
+        return isDelay;
     }
 
     public void delay(LocalDateTime newDepartureTime, LocalDateTime newArrivalTime) {
-        if (newDepartureTime.isAfter(this.getDepartureTime())
-                && newArrivalTime.isAfter(this.getArrivalTime())) {
-            this.departureTime = newDepartureTime;
-            this.arrivalTime = newArrivalTime;
-            this.isDelay = true;
+        if (newDepartureTime.isAfter(this.getDepartureTime()) && newArrivalTime.isAfter(this.getArrivalTime())) {
+            this.departureTime = newDepartureTime; this.arrivalTime = newArrivalTime; this.status = FlightStatus.DELAYED;
+            // 更新为延误状态
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            System.out.println("Flight " + flightNumber + " has been delayed. New departure time: "
-                    + newDepartureTime.format(formatter) + ", new arrival time: " + newArrivalTime.format(formatter));
+            System.out.println("Flight " + flightNumber + " has been delayed. New departure time: " + newDepartureTime.format(formatter) + ", new arrival time: " + newArrivalTime.format(formatter));
         } else {
             throw new IllegalArgumentException("New departure and arrival times must be later than the original times.");
         }
